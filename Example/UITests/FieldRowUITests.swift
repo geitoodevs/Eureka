@@ -130,18 +130,26 @@ class FieldRowUITests: XCTestCase {
     func testPickerInputRowChangesValuesProperly() {
         let app = XCUIApplication()
         let tablesQuery = app.tables
+        sleep(2);
+        
+        let rowsExists = NSPredicate(format: "exists == 1", argumentArray: nil)
+        self.expectationForPredicate(rowsExists, evaluatedWithObject: tablesQuery.staticTexts["Rows"], handler: nil)
+        self.waitForExpectationsWithTimeout(5, handler: nil)
         tablesQuery.staticTexts["Rows"].tap()
         
-        let pickerInput = tablesQuery.cells.staticTexts["Picker Input"]
+        let pickerInputExists = NSPredicate(format: "exists == 1", argumentArray: nil)
+        self.expectationForPredicate(pickerInputExists, evaluatedWithObject: tablesQuery.staticTexts["Picker Input"], handler: nil)
+        self.waitForExpectationsWithTimeout(5, handler:nil)
+        tablesQuery.staticTexts["Picker Input"].tap()
+        
         let pickerView = app.pickers["picker_view"]
-        pickerInput.tap()
         
         // Check initial status of picker
         XCTAssert(pickerView.pickerWheels["option 1"].exists, "Picker's initial status should be option 1")
         
         pickerView.pickerWheels["option 1"].adjustToPickerWheelValue("option 4");
         app.toolbars.buttons["Done"].tap()
-        pickerInput.tap()
+        tablesQuery.staticTexts["Picker Input"].tap()
         
         // Check if the selection is correct
         XCTAssert(pickerView.pickerWheels["option 4"].exists, "The selected value doesn't match")
